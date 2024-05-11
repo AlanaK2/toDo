@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActionSheetController, AlertController, ToastController } from '@ionic/angular';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +20,7 @@ tasks: any[] = [];
     if(taskJson!= null){
       this.tasks = JSON.parse(taskJson);
     }
+
   }
 
   async showAdd(){
@@ -90,4 +92,79 @@ tasks: any[] = [];
 
     await actionSheet.present();
    }
+
+   async delete(task:any, slidingItem: IonItemSliding){
+    const alert = await this.alertCtrl.create({
+      header: 'Atenção!',
+      message: 'Tem certeza que gostaria de excluir?',
+      buttons: [
+        {
+        text: 'Não',
+        role: 'cancel',
+        cssClass: 'secondary',
+        handler: () => {
+          slidingItem.closeOpened();
+        }
+      },
+    {
+      text: 'Sim',
+      handler: ()=> {
+        this.tasks = this.tasks.filter(taskArray => task != taskArray);
+        this.updateLocalStorage();
+      }
+    }],
+    });
+
+    await alert.present();
+   }
+
+   async editTask(task: any, slidingItem: IonItemSliding) {
+    const alert = await this.alertCtrl.create({
+      header: 'Editar Tarefa',
+      inputs: [
+        {
+          name: 'newTaskName',
+          type: 'text',
+          placeholder: 'Novo texto da tarefa',
+          value: task.name // O texto atual da tarefa é o valor padrão
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Salvar',
+          handler: (form) => {
+            const newTaskName = form.newTaskName.trim();
+            if (newTaskName.length === 0) {
+              this.presentToast('O texto da tarefa não pode estar vazio.');
+            } else {
+              // Atualiza o nome da tarefa
+              task.name = newTaskName;
+              // Atualiza o armazenamento local
+              this.updateLocalStorage();
+              slidingItem.closeOpened();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+}
+
+async presentToast(message: string) {
+  const toast = await this.toastCtrl.create({
+    message: message,
+    duration: 2000,
+    position: 'bottom'
+  });
+  toast.present();
+}
+
+
+
   }
