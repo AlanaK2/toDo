@@ -1,5 +1,16 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "toDo",
-	"webDir": "www"
+  "appId": "com.yourcompany.todo",
+  "appName": "toDo",
+  "webDir": "www",
+  "cordova": {
+    "preferences": {
+      "ScrollEnabled": "false",
+      "BackupWebStorage": "none",
+      "SplashMaintainAspectRatio": "true",
+      "FadeSplashScreenDuration": "300",
+      "SplashShowOnlyFirstTime": "false",
+      "SplashScreen": "screen",
+      "SplashScreenDelay": "3000"
+    }
+  }
 }
